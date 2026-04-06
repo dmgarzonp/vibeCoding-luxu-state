@@ -49,22 +49,6 @@ export default function Home() {
             {newProperties.map((property) => (
               <PropertyCard key={property.id} property={property} />
             ))}
-            
-            {/* Additional cards to fill the grid as in reference */}
-            {[1, 2].map((i) => (
-              <PropertyCard 
-                key={`extra-${i}`} 
-                property={{
-                  ...newProperties[i % 2],
-                  id: `extra-${i}`,
-                  title: i === 1 ? 'Central Studio' : 'Garden Villa',
-                  location: i === 1 ? '555 Main St, Chicago' : '999 Oak Ln, Austin',
-                  image: i === 1 
-                    ? 'https://images.unsplash.com/photo-1536376074432-ad7374f6bd2a?auto=format&fit=crop&q=80&w=600'
-                    : 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&q=80&w=600'
-                }} 
-              />
-            ))}
           </div>
           
           <div className="mt-12 text-center">
