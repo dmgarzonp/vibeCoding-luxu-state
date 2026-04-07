@@ -2,9 +2,28 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import FeaturedCard from './components/FeaturedCard';
 import PropertyCard from './components/PropertyCard';
-import { featuredProperties, newProperties } from './data/properties';
+import Pagination from './components/Pagination';
+import { getProperties } from '../lib/actions/properties';
 
-export default function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const params = await searchParams;
+  const currentPage = Number(params.page) || 1;
+  const limit = 8;
+
+  // Fetch data on the server
+  const { data: featuredProperties } = await getProperties({ featured: true });
+  const { data: newProperties, count: totalNew } = await getProperties({ 
+    featured: false, 
+    page: currentPage, 
+    limit 
+  });
+
+  const totalPages = Math.ceil(totalNew / limit);
+
   return (
     <div className="min-h-screen bg-clear-day text-nordic font-display selection:bg-mosque selection:text-white">
       <Navbar />
@@ -13,23 +32,25 @@ export default function Home() {
         <Hero />
 
         {/* Featured Collections Section */}
-        <section className="mb-16">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h2 className="text-2xl font-light text-nordic">Colecciones Destacadas</h2>
-              <p className="text-nordic/60 mt-1 text-sm font-light">Propiedades seleccionadas para el ojo exigente.</p>
+        {featuredProperties.length > 0 && (
+          <section className="mb-16">
+            <div className="flex items-end justify-between mb-8">
+              <div>
+                <h2 className="text-2xl font-light text-nordic">Colecciones Destacadas</h2>
+                <p className="text-nordic/60 mt-1 text-sm font-light">Propiedades seleccionadas para el ojo exigente.</p>
+              </div>
+              <a href="#" className="hidden sm:flex items-center gap-1 text-sm font-medium text-mosque hover:opacity-70 transition-opacity">
+                Ver todas <span className="material-icons text-sm">arrow_forward</span>
+              </a>
             </div>
-            <a href="#" className="hidden sm:flex items-center gap-1 text-sm font-medium text-mosque hover:opacity-70 transition-opacity">
-              Ver todas <span className="material-icons text-sm">arrow_forward</span>
-            </a>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {featuredProperties.map((property) => (
-              <FeaturedCard key={property.id} property={property} />
-            ))}
-          </div>
-        </section>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {featuredProperties.map((property) => (
+                <FeaturedCard key={property.id} property={property} />
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* New in Market Section */}
         <section className="mb-16">
@@ -51,11 +72,11 @@ export default function Home() {
             ))}
           </div>
           
-          <div className="mt-12 text-center">
-            <button className="px-8 py-3 bg-white border border-nordic/10 hover:border-mosque hover:text-mosque text-nordic font-medium rounded-lg transition-all hover:shadow-md text-sm">
-              Cargar más propiedades
-            </button>
-          </div>
+          {totalPages > 1 && (
+            <div className="mt-12">
+              <Pagination currentPage={currentPage} totalPages={totalPages} />
+            </div>
+          )}
         </section>
       </main>
     </div>
