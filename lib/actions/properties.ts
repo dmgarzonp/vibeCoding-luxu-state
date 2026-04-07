@@ -49,6 +49,7 @@ export async function getProperties({
     image: item.image,
     isExclusive: item.is_exclusive,
     isNew: item.is_new,
+    isFeatured: item.is_featured,
     status: item.status,
   }));
 

@@ -10,6 +10,7 @@ export interface Property {
   image: string;
   isExclusive?: boolean;
   isNew?: boolean;
+  isFeatured?: boolean;
   status: 'FOR SALE' | 'FOR RENT';
 }
 
@@ -25,6 +26,7 @@ export const featuredProperties: Property[] = [
     sqm: 4200,
     image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=800',
     isExclusive: true,
+    isFeatured: true,
     status: 'FOR SALE',
   },
   {
@@ -38,6 +40,7 @@ export const featuredProperties: Property[] = [
     sqm: 2100,
     image: 'https://images.unsplash.com/photo-1600607687940-4e52723659a9?auto=format&fit=crop&q=80&w=800',
     isNew: true,
+    isFeatured: true,
     status: 'FOR SALE',
   },
 ];
