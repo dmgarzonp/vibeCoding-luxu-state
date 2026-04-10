@@ -1,5 +1,6 @@
 import React from 'react';
 import { Property } from '../data/properties';
+import Link from 'next/link';
 
 interface PropertyCardProps {
   property: Property;
@@ -7,8 +8,9 @@ interface PropertyCardProps {
 
 const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
   return (
-    <article className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] transition-all duration-300 group cursor-pointer h-full flex flex-col border border-nordic/5">
-      <div className="relative aspect-[4/3] overflow-hidden">
+    <Link href={`/property/${property.slug}`} className="group block h-full">
+      <article className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] transition-all duration-300 cursor-pointer h-full flex flex-col border border-nordic/5">
+        <div className="relative aspect-[4/3] overflow-hidden">
         <img
           alt={property.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -52,7 +54,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           </div>
         </div>
       </div>
-    </article>
+      </article>
+    </Link>
   );
 };
 

@@ -8,6 +8,8 @@ export interface Property {
   baths: number;
   sqm: number;
   image: string;
+  images?: string[]; 
+  slug?: string;
   isExclusive?: boolean;
   isNew?: boolean;
   isFeatured?: boolean;

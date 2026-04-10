@@ -1,5 +1,6 @@
 import React from 'react';
 import { Property } from '../data/properties';
+import Link from 'next/link';
 
 interface FeaturedCardProps {
   property: Property;
@@ -7,8 +8,9 @@ interface FeaturedCardProps {
 
 const FeaturedCard: React.FC<FeaturedCardProps> = ({ property }) => {
   return (
-    <div className="group relative rounded-xl overflow-hidden shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] bg-white cursor-pointer">
-      <div className="aspect-[4/3] w-full overflow-hidden relative">
+    <Link href={`/property/${property.slug}`} className="block">
+      <div className="group relative rounded-xl overflow-hidden shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] bg-white cursor-pointer h-full">
+        <div className="aspect-[4/3] w-full overflow-hidden relative">
         <img
           alt={property.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -54,7 +56,8 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({ property }) => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </Link>
   );
 };
 

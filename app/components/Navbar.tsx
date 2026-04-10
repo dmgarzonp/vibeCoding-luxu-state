@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,12 +11,14 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <div className="flex-shrink-0 flex items-center gap-2 cursor-pointer">
-            <div className="w-8 h-8 rounded-lg bg-nordic flex items-center justify-center">
-              <span className="material-icons text-white text-lg">apartment</span>
+          <Link href="/">
+            <div className="flex-shrink-0 flex items-center gap-2 cursor-pointer">
+              <div className="w-8 h-8 rounded-lg bg-nordic flex items-center justify-center">
+                <span className="material-icons text-white text-lg">apartment</span>
+              </div>
+              <span className="text-xl font-semibold tracking-tight text-nordic">LuxeEstate</span>
             </div>
-            <span className="text-xl font-semibold tracking-tight text-nordic">LuxeEstate</span>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
