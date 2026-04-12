@@ -104,6 +104,21 @@
     "meta_desc": "Belle propriété à {location} avec {beds} chambres et {baths} salles de bain.",
     "meta_og_desc": "Propriété à {location} pour {price}"
   },
+  "login": {
+    "title": "Bienvenue chez LuxeEstate",
+    "subtitle": "Débloquez des propriétés exclusives dans le monde entier.",
+    "google": "Continuer avec Google",
+    "github": "Continuer avec GitHub",
+    "no_account": "Vous n'avez pas de compte ?",
+    "signup": "S'inscrire",
+    "privacy": "Politique de Confidentialité",
+    "terms": "Conditions d'Utilisation",
+    "help": "Centre d'Aide"
+  },
+  "auth": {
+    "login": "Se Connecter",
+    "logout": "Se Déconnecter"
+  },
   "language": {
     "selector_label": "Langue",
     "es": "Español",

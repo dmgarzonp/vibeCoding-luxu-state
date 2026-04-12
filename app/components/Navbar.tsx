@@ -1,13 +1,50 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import LanguageSelector from './LanguageSelector';
 import { useTranslation } from '../../lib/i18n/context';
+import { supabase } from '../../lib/supabase';
+import { User } from '@supabase/supabase-js';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    // Check active session on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Close profile dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setIsProfileOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setIsProfileOpen(false);
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-clear-day/95 backdrop-blur-md border-b border-nordic/10">
@@ -46,15 +83,48 @@ const Navbar = () => {
               <LanguageSelector />
             </div>
 
-            <button className="flex items-center gap-2 pl-2 border-l border-nordic/10">
-              <div className="w-9 h-9 rounded-full bg-gray-200 overflow-hidden ring-2 ring-transparent hover:ring-mosque transition-all">
-                <img
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                />
-              </div>
-            </button>
+            <div className="pl-2 border-l border-nordic/10 relative" ref={profileRef}>
+              {user ? (
+                <>
+                  <button 
+                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="w-9 h-9 rounded-full bg-gray-200 overflow-hidden ring-2 ring-transparent hover:ring-mosque transition-all">
+                      <img
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                        src={user.user_metadata?.avatar_url || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"}
+                      />
+                    </div>
+                  </button>
+                  
+                  {isProfileOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-nordic/5 overflow-hidden z-[200] animate-fade-in-down">
+                      <div className="py-2 px-4 border-b border-nordic/5">
+                        <p className="text-sm font-semibold truncate text-nordic">
+                          {user.user_metadata?.full_name || user.email}
+                        </p>
+                      </div>
+                      <div className="py-1">
+                        <button
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          <span className="material-icons text-[18px]">logout</span>
+                          <span>{t('auth.logout')}</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <Link href="/login" className="flex items-center gap-1.5 px-4 py-2 bg-nordic text-white text-sm font-medium rounded-lg hover:bg-mosque transition-colors duration-300">
+                  <span className="material-icons text-[18px]">login</span>
+                  <span className="hidden sm:inline">{t('auth.login')}</span>
+                </Link>
+              )}
+            </div>
 
             {/* Mobile menu button */}
             <button
