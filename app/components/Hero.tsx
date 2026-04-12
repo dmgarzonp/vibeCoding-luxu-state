@@ -7,6 +7,7 @@ import FilterModal from './FilterModal';
 const Hero = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const currentType = searchParams?.get('type') || 'Todos';
   const [query, setQuery] = useState(searchParams?.get('query') || '');
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
@@ -73,15 +74,23 @@ const Hero = () => {
         <div className="flex items-center justify-center gap-3 overflow-x-auto hide-scroll py-2 px-4 -mx-4">
           <button 
             onClick={() => setCategoryFilter('Todos')}
-            className="whitespace-nowrap px-5 py-2 rounded-full bg-nordic text-white text-sm font-medium shadow-lg shadow-nordic/10 transition-transform hover:-translate-y-0.5 cursor-pointer"
+            className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all hover:-translate-y-0.5 cursor-pointer ${
+              currentType === 'Todos' 
+                ? 'bg-nordic text-white shadow-lg shadow-nordic/10' 
+                : 'bg-white border border-nordic/5 text-nordic/60 hover:text-nordic hover:border-mosque/50 hover:bg-mosque/5'
+            }`}
           >
             Todos
           </button>
           {categories.slice(1).map((cat) => (
-            <button
+             <button
               key={cat}
               onClick={() => setCategoryFilter(cat)}
-              className="whitespace-nowrap px-5 py-2 rounded-full bg-white border border-nordic/5 text-nordic/60 hover:text-nordic hover:border-mosque/50 text-sm font-medium transition-all hover:bg-mosque/5 cursor-pointer"
+              className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-medium transition-all hover:-translate-y-0.5 cursor-pointer ${
+                currentType === cat 
+                  ? 'bg-nordic text-white shadow-lg shadow-nordic/10' 
+                  : 'bg-white border border-nordic/5 text-nordic/60 hover:text-nordic hover:border-mosque/50 hover:bg-mosque/5'
+              }`}
             >
               {cat}
             </button>

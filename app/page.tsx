@@ -38,6 +38,8 @@ export default async function Home({
   });
 
   const totalPages = Math.ceil(totalNew / limit);
+  const isFilterActive = !!(query || (type && type !== 'Todos') || beds || baths);
+  const featuredPropertiesToDisplay = featuredProperties.slice(0, 2);
 
   return (
     <div className="min-h-screen bg-clear-day text-nordic font-display selection:bg-mosque selection:text-white">
@@ -49,7 +51,7 @@ export default async function Home({
         </Suspense>
 
         {/* Featured Collections Section */}
-        {featuredProperties.length > 0 && (
+        {!isFilterActive && featuredPropertiesToDisplay.length > 0 && (
           <section className="mb-16">
             <div className="flex items-end justify-between mb-8">
               <div>
@@ -62,7 +64,7 @@ export default async function Home({
             </div>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {featuredProperties.map((property) => (
+              {featuredPropertiesToDisplay.map((property) => (
                 <FeaturedCard key={property.id} property={property} />
               ))}
             </div>
