@@ -36,31 +36,62 @@ export interface GetPropertiesParams {
   page?: number;
   limit?: number;
   featured?: boolean;
+  query?: string;
+  type?: string;
+  beds?: number;
+  baths?: number;
 }
 
 export async function getProperties({ 
   page = 1, 
   limit = 8, 
-  featured 
+  featured,
+  query,
+  type,
+  beds,
+  baths
 }: GetPropertiesParams = {}) {
-  let query = supabase
+  let dbQuery = supabase
     .from('properties')
     .select('*', { count: 'exact' });
 
   if (featured !== undefined) {
-    query = query.eq('is_featured', featured);
+    dbQuery = dbQuery.eq('is_featured', featured);
+  }
+
+  if (query) {
+    dbQuery = dbQuery.or(`title.ilike.%${query}%,location.ilike.%${query}%,type.ilike.%${query}%`);
+  }
+
+  if (type && type.toLowerCase() !== 'todos' && type.toLowerCase() !== 'any type') {
+    // Basic translation for UI words
+    let mappedType = type;
+    if (type.toLowerCase() === 'casas') mappedType = 'House';
+    else if (type.toLowerCase() === 'apartamentos') mappedType = 'Apartment';
+    else if (type.toLowerCase() === 'villas') mappedType = 'Villa';
+    else if (type.toLowerCase() === 'penthouses') mappedType = 'Penthouse';
+    
+    dbQuery = dbQuery.ilike('type', mappedType);
+  }
+
+  if (beds) {
+    dbQuery = dbQuery.gte('beds', beds);
+  }
+
+  if (baths) {
+    dbQuery = dbQuery.gte('baths', baths);
   }
 
   // Sort by created_at or is_new to show recent ones first
-  query = query.order('created_at', { ascending: false });
+  dbQuery = dbQuery.order('created_at', { ascending: false });
 
   if (!featured) {
     const from = (page - 1) * limit;
     const to = from + limit - 1;
-    query = query.range(from, to);
+    dbQuery = dbQuery.range(from, to);
   }
 
-  const { data, error, count } = await query;
+  const { data, error, count } = await dbQuery;
 
   if (error) {
     console.error('Error fetching properties:', error);

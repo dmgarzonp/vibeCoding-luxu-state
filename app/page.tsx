@@ -4,22 +4,37 @@ import FeaturedCard from './components/FeaturedCard';
 import PropertyCard from './components/PropertyCard';
 import Pagination from './components/Pagination';
 import { getProperties } from '../lib/actions/properties';
+import { Suspense } from 'react';
 
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ 
+    page?: string;
+    query?: string;
+    type?: string;
+    beds?: string;
+    baths?: string;
+  }>;
 }) {
   const params = await searchParams;
   const currentPage = Number(params.page) || 1;
   const limit = 8;
+  const query = params.query;
+  const type = params.type;
+  const beds = params.beds ? Number(params.beds) : undefined;
+  const baths = params.baths ? Number(params.baths) : undefined;
 
   // Fetch data on the server
-  const { data: featuredProperties } = await getProperties({ featured: true });
+  const { data: featuredProperties } = await getProperties({ featured: true, query, type, beds, baths });
   const { data: newProperties, count: totalNew } = await getProperties({ 
     featured: false, 
     page: currentPage, 
-    limit 
+    limit,
+    query,
+    type,
+    beds,
+    baths
   });
 
   const totalPages = Math.ceil(totalNew / limit);
@@ -29,7 +44,9 @@ export default async function Home({
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-        <Hero />
+        <Suspense fallback={<div className="py-12 h-[300px] flex items-center justify-center">Cargando buscador...</div>}>
+          <Hero />
+        </Suspense>
 
         {/* Featured Collections Section */}
         {featuredProperties.length > 0 && (
