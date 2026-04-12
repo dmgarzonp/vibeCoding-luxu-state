@@ -14,7 +14,7 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({ property }) => {
         <img
           alt={property.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-          src={property.image}
+          src={property.images?.[0] || ''}
         />
         
         {/* Badges */}

@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PropertyPageProps): Promise<M
     openGraph: {
       title: property.title,
       description: `Propiedad en ${property.location} por ${property.price}`,
-      images: [{ url: property.image }],
+      images: [{ url: property.images?.[0] || '' }],
     }
   };
 }
@@ -39,10 +39,10 @@ export default async function PropertyDetailsPage({ params }: PropertyPageProps)
   // To display the gallery based on images layout in code.html
   // Let's ensure we have at least 4 images to map or fallback to the same image.
   const galleryImages = [
-    property.images?.[0] || property.image,
-    property.images?.[1] || property.image,
-    property.images?.[2] || property.image,
-    property.images?.[3] || property.image,
+    property.images?.[0] || '',
+    property.images?.[1] || property.images?.[0] || '',
+    property.images?.[2] || property.images?.[0] || '',
+    property.images?.[3] || property.images?.[0] || '',
   ];
 
   return (

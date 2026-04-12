@@ -7,9 +7,8 @@ export interface Property {
   beds: number;
   baths: number;
   sqm: number;
-  image: string;
-  images?: string[]; 
-  slug?: string;
+  images: string[];
+slug?: string;
   isExclusive?: boolean;
   isNew?: boolean;
   isFeatured?: boolean;
@@ -26,7 +25,7 @@ export const featuredProperties: Property[] = [
     beds: 5,
     baths: 4.5,
     sqm: 4200,
-    image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=800',
+    images: ['https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'],
     isExclusive: true,
     isFeatured: true,
     status: 'FOR SALE',
@@ -40,7 +39,7 @@ export const featuredProperties: Property[] = [
     beds: 3,
     baths: 3,
     sqm: 2100,
-    image: 'https://images.unsplash.com/photo-1600607687940-4e52723659a9?auto=format&fit=crop&q=80&w=800',
+    images: ['https://images.unsplash.com/photo-1600607687940-4e52723659a9?auto=format&fit=crop&q=80&w=800', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'],
     isNew: true,
     isFeatured: true,
     status: 'FOR SALE',
@@ -57,7 +56,7 @@ export const newProperties: Property[] = [
     beds: 3,
     baths: 2,
     sqm: 120,
-    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600',
+    images: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'],
     status: 'FOR SALE',
   },
   {
@@ -69,7 +68,7 @@ export const newProperties: Property[] = [
     beds: 1,
     baths: 1,
     sqm: 85,
-    image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&q=80&w=600',
+    images: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'],
     status: 'FOR RENT',
   },
   {
@@ -81,7 +80,7 @@ export const newProperties: Property[] = [
     beds: 2,
     baths: 2,
     sqm: 98,
-    image: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80&w=600',
+    images: ['https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'],
     status: 'FOR SALE',
   },
   {
@@ -93,7 +92,7 @@ export const newProperties: Property[] = [
     beds: 3,
     baths: 3,
     sqm: 180,
-    image: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600',
+    images: ['https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'],
     status: 'FOR RENT',
   },
   {
@@ -105,7 +104,7 @@ export const newProperties: Property[] = [
     beds: 4,
     baths: 3,
     sqm: 210,
-    image: '/properties/prop_1.png',
+    images: ['/properties/prop_1.png', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'],
     status: 'FOR SALE',
     isNew: true,
   },
@@ -118,7 +117,7 @@ export const newProperties: Property[] = [
     beds: 6,
     baths: 5,
     sqm: 450,
-    image: '/properties/prop_2.png',
+    images: ['/properties/prop_2.png', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'],
     status: 'FOR SALE',
     isExclusive: true,
   },
@@ -131,7 +130,7 @@ export const newProperties: Property[] = [
     beds: 2,
     baths: 2,
     sqm: 110,
-    image: '/properties/prop_3.png',
+    images: ['/properties/prop_3.png', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'],
     status: 'FOR RENT',
   },
   {
@@ -143,7 +142,7 @@ export const newProperties: Property[] = [
     beds: 5,
     baths: 4,
     sqm: 320,
-    image: '/properties/prop_4.png',
+    images: ['/properties/prop_4.png', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'],
     status: 'FOR SALE',
   },
   {
@@ -155,7 +154,7 @@ export const newProperties: Property[] = [
     beds: 3,
     baths: 2,
     sqm: 155,
-    image: '/properties/prop_5.png',
+    images: ['/properties/prop_5.png', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'],
     status: 'FOR SALE',
     isNew: true,
   },
@@ -168,7 +167,7 @@ export const newProperties: Property[] = [
     beds: 7,
     baths: 6,
     sqm: 550,
-    image: '/properties/prop_6.png',
+    images: ['/properties/prop_6.png', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'],
     status: 'FOR SALE',
     isExclusive: true,
   },
@@ -181,7 +180,7 @@ export const newProperties: Property[] = [
     beds: 4,
     baths: 4,
     sqm: 280,
-    image: '/properties/prop_7.png',
+    images: ['/properties/prop_7.png', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'],
     status: 'FOR SALE',
   },
   {
@@ -193,7 +192,7 @@ export const newProperties: Property[] = [
     beds: 2,
     baths: 1,
     sqm: 95,
-    image: '/properties/prop_8.png',
+    images: ['/properties/prop_8.png', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'],
     status: 'FOR RENT',
   },
   {
@@ -205,7 +204,7 @@ export const newProperties: Property[] = [
     beds: 3,
     baths: 3,
     sqm: 240,
-    image: '/properties/prop_9.png',
+    images: ['/properties/prop_9.png', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'],
     status: 'FOR SALE',
     isNew: true,
   },
@@ -218,7 +217,7 @@ export const newProperties: Property[] = [
     beds: 5,
     baths: 5,
     sqm: 480,
-    image: '/properties/prop_10.png',
+    images: ['/properties/prop_10.png', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600', 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'],
     status: 'FOR SALE',
     isExclusive: true,
   },

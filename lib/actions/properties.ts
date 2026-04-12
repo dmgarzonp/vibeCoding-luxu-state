@@ -1,6 +1,37 @@
 import { supabase } from '../supabase';
 import { Property } from '../../app/data/properties';
 
+const dummyImages = [
+  'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600',
+  'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80&w=600',
+  'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600'
+];
+
+function resolveImages(item: any): string[] {
+  let images = item.images ? [...item.images] : [];
+  
+  if (images.length === 0 && item.image) {
+    images.push(item.image);
+  } else if (images.length === 0 && !item.image) {
+    images.push(dummyImages[0]);
+  }
+  
+  while (images.length < 4) {
+    images.push(dummyImages[(images.length - 1) % dummyImages.length]);
+  }
+  
+  // Replace broken unsplash URLs that might come from the database
+  return images.map(img => {
+    if (img === 'https://images.unsplash.com/photo-1600607687931-cebf581897de?auto=format&fit=crop&q=80&w=600') {
+      return 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=600';
+    }
+    if (img === 'https://images.unsplash.com/photo-1600607688960-e09282b2fa15?auto=format&fit=crop&q=80&w=600') {
+      return 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&q=80&w=600';
+    }
+    return img;
+  });
+}
+
 export interface GetPropertiesParams {
   page?: number;
   limit?: number;
@@ -52,8 +83,7 @@ export async function getProperties({
       beds: Number(item.beds),
       baths: Number(item.baths),
       sqm: item.sqm,
-      image: item.image,
-      images: item.images || [item.image],
+      images: resolveImages(item),
       slug: item.slug || defaultSlug,
       isExclusive: item.is_exclusive,
       isNew: item.is_new,
@@ -91,8 +121,7 @@ export async function getPropertyBySlug(slug: string) {
     beds: Number(data.beds),
     baths: Number(data.baths),
     sqm: data.sqm,
-    image: data.image,
-    images: data.images || [data.image],
+    images: resolveImages(data),
     slug: data.slug || slug,
     isExclusive: data.is_exclusive,
     isNew: data.is_new,
