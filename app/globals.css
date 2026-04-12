@@ -24,3 +24,29 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+/* Language selector dropdown animation */
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fade-in-down 0.18s ease-out both;
+}
+
+/* Hide scrollbar utility */
+.hide-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scroll::-webkit-scrollbar {
+  display: none;
+}
+

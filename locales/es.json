@@ -1,0 +1,116 @@
+{
+  "nav": {
+    "buy": "Comprar",
+    "rent": "Alquilar",
+    "sell": "Vender",
+    "saved": "Guardados"
+  },
+  "hero": {
+    "title_start": "Encuentra tu",
+    "title_highlight": "santuario",
+    "placeholder": "Busca por ciudad, vecindario o dirección...",
+    "search_btn": "Buscar",
+    "filters_btn": "Filtros",
+    "categories": {
+      "all": "Todos",
+      "houses": "Casas",
+      "apartments": "Apartamentos",
+      "villas": "Villas",
+      "penthouses": "Penthouses"
+    }
+  },
+  "featured": {
+    "title": "Colecciones Destacadas",
+    "subtitle": "Propiedades seleccionadas para el ojo exigente.",
+    "view_all": "Ver todas"
+  },
+  "listings": {
+    "title": "Novedades en el Mercado",
+    "subtitle": "Nuevas oportunidades añadidas esta semana.",
+    "all": "Todo",
+    "for_sale": "Venta",
+    "for_rent": "Alquiler"
+  },
+  "filter": {
+    "title": "Filtros",
+    "clear": "Limpiar filtros",
+    "apply": "Buscar Propiedades",
+    "location_label": "Ubicación o Búsqueda",
+    "location_placeholder": "Ciudad, vecindario, dirección o tipo",
+    "price_label": "Rango de Precio",
+    "price_min": "Precio Min",
+    "price_max": "Precio Max",
+    "type_label": "Tipo de Propiedad",
+    "type_any": "Cualquier tipo",
+    "types": {
+      "houses": "Casas",
+      "apartments": "Apartamentos",
+      "villas": "Villas",
+      "penthouses": "Penthouses"
+    },
+    "beds": "Habitaciones",
+    "baths": "Baños",
+    "amenities_label": "Comodidades y Características",
+    "amenities": {
+      "pool": "Piscina",
+      "gym": "Gimnasio",
+      "parking": "Parqueadero",
+      "ac": "Aire Acondicionado",
+      "wifi": "Wifi Alta Velocidad",
+      "terrace": "Patio / Terraza"
+    }
+  },
+  "card": {
+    "for_sale": "Venta",
+    "for_rent": "Alquiler",
+    "per_month": "/mes",
+    "exclusive": "Exclusivo",
+    "new": "Nuevo",
+    "beds": "Hab.",
+    "baths": "Baños"
+  },
+  "property": {
+    "home": "Inicio",
+    "featured_badge": "Destacado",
+    "new_badge": "Nuevo",
+    "for_sale": "En Venta",
+    "for_rent": "Alquiler",
+    "view_photos": "Ver todas las fotos",
+    "view_map": "Ver en mapa",
+    "features_title": "Características Principales",
+    "sqm": "Mts Cuadrados",
+    "bedrooms": "Habitaciones",
+    "bathrooms": "Baños",
+    "garages": "Garajes",
+    "about_title": "Sobre esta propiedad",
+    "about_desc_1": "{title} representa la cúspide de la vida moderna y elegante. Situada estratégicamente en {location}, esta {type} ofrece un equilibrio perfecto entre confort, diseño y accesibilidad.",
+    "about_desc_2": "Diseñada pensando en la iluminación natural, los espacios abiertos se comunican de manera fluida, creando ambientes ideales tanto para el descanso privado como para el entretenimiento. Los acabados de primera calidad y las amenidades excepcionales definen el estándar de esta increíble inversión.",
+    "amenities_title": "Amenidades Incluidas",
+    "amenities": {
+      "smart_home": "Sistema Smart Home",
+      "ac": "Aire Acondicionado Central",
+      "security": "Seguridad 24/7",
+      "bbq": "Zona BBQ",
+      "garden": "Jardín Privado",
+      "pool": "Piscina Condominio"
+    },
+    "mortgage_title": "Calculadora de Hipoteca",
+    "mortgage_sub": "Estima tu pago inicial desde un <strong>20% de enganche</strong>",
+    "mortgage_btn": "Calcular Pago",
+    "schedule": "Agendar Visita",
+    "contact": "Contactar Agente",
+    "agent_badge": "Agente Top",
+    "not_found": "Propiedad no encontrada | LuxeEstate",
+    "meta_desc": "Hermosa propiedad en {location} con {beds} habitaciones y {baths} baños.",
+    "meta_og_desc": "Propiedad en {location} por {price}"
+  },
+  "language": {
+    "selector_label": "Idioma",
+    "es": "Español",
+    "en": "English",
+    "fr": "Français"
+  },
+  "footer": {
+    "rights": "© 2026 LuxeEstate Inc. Todos los derechos reservados."
+  }
+}

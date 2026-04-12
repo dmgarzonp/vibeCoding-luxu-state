@@ -1,0 +1,116 @@
+{
+  "nav": {
+    "buy": "Buy",
+    "rent": "Rent",
+    "sell": "Sell",
+    "saved": "Saved"
+  },
+  "hero": {
+    "title_start": "Find your",
+    "title_highlight": "sanctuary",
+    "placeholder": "Search by city, neighborhood or address...",
+    "search_btn": "Search",
+    "filters_btn": "Filters",
+    "categories": {
+      "all": "All",
+      "houses": "Houses",
+      "apartments": "Apartments",
+      "villas": "Villas",
+      "penthouses": "Penthouses"
+    }
+  },
+  "featured": {
+    "title": "Featured Collections",
+    "subtitle": "Handpicked properties for the discerning eye.",
+    "view_all": "View all"
+  },
+  "listings": {
+    "title": "New on the Market",
+    "subtitle": "Fresh opportunities added this week.",
+    "all": "All",
+    "for_sale": "For Sale",
+    "for_rent": "For Rent"
+  },
+  "filter": {
+    "title": "Filters",
+    "clear": "Clear filters",
+    "apply": "Search Properties",
+    "location_label": "Location or Search",
+    "location_placeholder": "City, neighborhood, address or type",
+    "price_label": "Price Range",
+    "price_min": "Min Price",
+    "price_max": "Max Price",
+    "type_label": "Property Type",
+    "type_any": "Any type",
+    "types": {
+      "houses": "Houses",
+      "apartments": "Apartments",
+      "villas": "Villas",
+      "penthouses": "Penthouses"
+    },
+    "beds": "Bedrooms",
+    "baths": "Bathrooms",
+    "amenities_label": "Amenities & Features",
+    "amenities": {
+      "pool": "Swimming Pool",
+      "gym": "Gym",
+      "parking": "Parking",
+      "ac": "Air Conditioning",
+      "wifi": "High-Speed Wifi",
+      "terrace": "Patio / Terrace"
+    }
+  },
+  "card": {
+    "for_sale": "For Sale",
+    "for_rent": "For Rent",
+    "per_month": "/mo",
+    "exclusive": "Exclusive",
+    "new": "New",
+    "beds": "Bed.",
+    "baths": "Baths"
+  },
+  "property": {
+    "home": "Home",
+    "featured_badge": "Featured",
+    "new_badge": "New",
+    "for_sale": "For Sale",
+    "for_rent": "For Rent",
+    "view_photos": "View all photos",
+    "view_map": "View on map",
+    "features_title": "Key Features",
+    "sqm": "Square Meters",
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "garages": "Garages",
+    "about_title": "About this property",
+    "about_desc_1": "{title} represents the pinnacle of modern and elegant living. Strategically located in {location}, this {type} offers a perfect balance of comfort, design and accessibility.",
+    "about_desc_2": "Designed with natural light in mind, the open spaces flow seamlessly, creating ideal environments for both private relaxation and entertainment. First-class finishes and exceptional amenities define the standard of this remarkable investment.",
+    "amenities_title": "Included Amenities",
+    "amenities": {
+      "smart_home": "Smart Home System",
+      "ac": "Central Air Conditioning",
+      "security": "24/7 Security",
+      "bbq": "BBQ Area",
+      "garden": "Private Garden",
+      "pool": "Condo Pool"
+    },
+    "mortgage_title": "Mortgage Calculator",
+    "mortgage_sub": "Estimate your down payment from a <strong>20% initial payment</strong>",
+    "mortgage_btn": "Calculate Payment",
+    "schedule": "Schedule a Visit",
+    "contact": "Contact Agent",
+    "agent_badge": "Top Agent",
+    "not_found": "Property not found | LuxeEstate",
+    "meta_desc": "Beautiful property in {location} with {beds} bedrooms and {baths} bathrooms.",
+    "meta_og_desc": "Property in {location} for {price}"
+  },
+  "language": {
+    "selector_label": "Language",
+    "es": "Español",
+    "en": "English",
+    "fr": "Français"
+  },
+  "footer": {
+    "rights": "© 2026 LuxeEstate Inc. All rights reserved."
+  }
+}

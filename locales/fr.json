@@ -1,0 +1,116 @@
+{
+  "nav": {
+    "buy": "Acheter",
+    "rent": "Louer",
+    "sell": "Vendre",
+    "saved": "Sauvegardés"
+  },
+  "hero": {
+    "title_start": "Trouvez votre",
+    "title_highlight": "sanctuaire",
+    "placeholder": "Rechercher par ville, quartier ou adresse...",
+    "search_btn": "Rechercher",
+    "filters_btn": "Filtres",
+    "categories": {
+      "all": "Tous",
+      "houses": "Maisons",
+      "apartments": "Appartements",
+      "villas": "Villas",
+      "penthouses": "Penthouses"
+    }
+  },
+  "featured": {
+    "title": "Collections en Vedette",
+    "subtitle": "Propriétés sélectionnées pour l'œil exigeant.",
+    "view_all": "Voir tout"
+  },
+  "listings": {
+    "title": "Nouveautés sur le Marché",
+    "subtitle": "Nouvelles opportunités ajoutées cette semaine.",
+    "all": "Tout",
+    "for_sale": "À Vendre",
+    "for_rent": "À Louer"
+  },
+  "filter": {
+    "title": "Filtres",
+    "clear": "Effacer les filtres",
+    "apply": "Rechercher des Propriétés",
+    "location_label": "Emplacement ou Recherche",
+    "location_placeholder": "Ville, quartier, adresse ou type",
+    "price_label": "Fourchette de Prix",
+    "price_min": "Prix Min",
+    "price_max": "Prix Max",
+    "type_label": "Type de Propriété",
+    "type_any": "Tout type",
+    "types": {
+      "houses": "Maisons",
+      "apartments": "Appartements",
+      "villas": "Villas",
+      "penthouses": "Penthouses"
+    },
+    "beds": "Chambres",
+    "baths": "Salles de bain",
+    "amenities_label": "Équipements et Caractéristiques",
+    "amenities": {
+      "pool": "Piscine",
+      "gym": "Gymnase",
+      "parking": "Parking",
+      "ac": "Climatisation",
+      "wifi": "Wifi Haut Débit",
+      "terrace": "Patio / Terrasse"
+    }
+  },
+  "card": {
+    "for_sale": "À Vendre",
+    "for_rent": "À Louer",
+    "per_month": "/mois",
+    "exclusive": "Exclusif",
+    "new": "Nouveau",
+    "beds": "Ch.",
+    "baths": "S.d.b."
+  },
+  "property": {
+    "home": "Accueil",
+    "featured_badge": "En Vedette",
+    "new_badge": "Nouveau",
+    "for_sale": "À Vendre",
+    "for_rent": "À Louer",
+    "view_photos": "Voir toutes les photos",
+    "view_map": "Voir sur la carte",
+    "features_title": "Caractéristiques Principales",
+    "sqm": "Mètres Carrés",
+    "bedrooms": "Chambres",
+    "bathrooms": "Salles de bain",
+    "garages": "Garages",
+    "about_title": "À propos de ce bien",
+    "about_desc_1": "{title} représente le summum de la vie moderne et élégante. Stratégiquement situé à {location}, cette {type} offre un équilibre parfait entre confort, design et accessibilité.",
+    "about_desc_2": "Conçue en pensant à la lumière naturelle, les espaces ouverts se communiquent de manière fluide, créant des ambiances idéales aussi bien pour le repos privé que pour le divertissement. Les finitions de première qualité et les équipements exceptionnels définissent le standard de cet incroyable investissement.",
+    "amenities_title": "Équipements Inclus",
+    "amenities": {
+      "smart_home": "Système Maison Connectée",
+      "ac": "Climatisation Centrale",
+      "security": "Sécurité 24h/24",
+      "bbq": "Espace BBQ",
+      "garden": "Jardin Privé",
+      "pool": "Piscine de Résidence"
+    },
+    "mortgage_title": "Calculatrice Hypothécaire",
+    "mortgage_sub": "Estimez votre acompte à partir d'un <strong>apport initial de 20%</strong>",
+    "mortgage_btn": "Calculer le Paiement",
+    "schedule": "Planifier une Visite",
+    "contact": "Contacter l'Agent",
+    "agent_badge": "Agent Top",
+    "not_found": "Propriété introuvable | LuxeEstate",
+    "meta_desc": "Belle propriété à {location} avec {beds} chambres et {baths} salles de bain.",
+    "meta_og_desc": "Propriété à {location} pour {price}"
+  },
+  "language": {
+    "selector_label": "Langue",
+    "es": "Español",
+    "en": "English",
+    "fr": "Français"
+  },
+  "footer": {
+    "rights": "© 2026 LuxeEstate Inc. Tous droits réservés."
+  }
+}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "../lib/i18n/context";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -23,7 +24,9 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
-      <body className="min-h-full flex flex-col font-display">{children}</body>
+      <body className="min-h-full flex flex-col font-display">
+        <LanguageProvider>{children}</LanguageProvider>
+      </body>
     </html>
   );
 }
