@@ -7,30 +7,94 @@ import { useTranslation } from '../../lib/i18n/context';
 import { supabase } from '../../lib/supabase';
 import { User } from '@supabase/supabase-js';
 
+/**
+ * Garantiza que el usuario autenticado tiene un registro en user_roles.
+ * Intenta primero con RPC (si existe), luego hace upsert directo como fallback.
+ */
+async function ensureUserRole(userId: string) {
+  // Intento 1: RPC con SECURITY DEFINER
+  const { error: rpcError } = await supabase.rpc('ensure_user_role');
+  if (!rpcError) return;
+
+  // Intento 2: Fallback — upsert directo
+  console.warn('[ensureUserRole] RPC falló, upsert directo:', rpcError.message);
+  const { error: upsertError } = await supabase
+    .from('user_roles')
+    .upsert({ id: userId, role: 'user' }, { onConflict: 'id', ignoreDuplicates: true });
+
+  if (upsertError) {
+    console.error('[ensureUserRole] Upsert falló:', upsertError.message);
+  }
+}
+
+/**
+ * Sincroniza el access_token con una cookie para que el servidor (Middleware) 
+ * pueda leer la sesión.
+ */
+function syncSessionToCookie(session: any) {
+  if (typeof document === 'undefined') return;
+  
+  const token = session?.access_token;
+  if (token) {
+    // Establecer cookie con expiración (puedes ajustar el Max-Age)
+    document.cookie = `sb-access-token=${token}; path=/; max-age=3600; SameSite=Lax;`;
+  } else {
+    // Borrar cookie
+    document.cookie = `sb-access-token=; path=/; max-age=0; SameSite=Lax;`;
+  }
+}
+
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
 
   useEffect(() => {
-    // Check active session on mount
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Verificar sesión activa al montar
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setUser(session?.user ?? null);
+      syncSessionToCookie(session);
+      if (session?.user) {
+        await ensureUserRole(session.user.id);
+        const { data } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single();
+        setIsAdmin(data?.role === 'admin');
+      }
     });
 
-    // Listen for auth changes
+    // Escuchar cambios de autenticación
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      async (event, session) => {
         setUser(session?.user ?? null);
+        syncSessionToCookie(session);
+
+        if (session?.user) {
+          await ensureUserRole(session.user.id);
+          const { data } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('id', session.user.id)
+            .single();
+          setIsAdmin(data?.role === 'admin');
+        } else {
+          setIsAdmin(false);
+          // NOTA: No redirigir aquí — lo maneja handleLogout con timeout
+        }
       }
     );
 
     return () => subscription.unsubscribe();
   }, []);
 
-  // Close profile dropdown on outside click
+  // Cerrar dropdown al click externo
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
@@ -42,9 +106,33 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    setIsLoggingOut(true);
     setIsProfileOpen(false);
+
+    try {
+      // scope:'local' limpia la sesión local INMEDIATAMENTE sin llamada de red.
+      // Mucho más confiable con providers OAuth (Google, GitHub).
+      await supabase.auth.signOut({ scope: 'local' });
+      syncSessionToCookie(null); // Limpiar cookie
+    } catch (e) {
+      console.warn('signOut warning:', e);
+    }
+
+
+    // Limpiar manualmente cualquier token de Supabase en localStorage
+    // como seguro adicional (por si el signOut no limpió todo)
+    try {
+      Object.keys(localStorage)
+        .filter((k) => k.startsWith('sb-'))
+        .forEach((k) => localStorage.removeItem(k));
+    } catch {
+      // localStorage puede no estar disponible en algunos contextos
+    }
+
+    // Redirigir siempre, sin importar si signOut tuvo error
+    window.location.href = '/';
   };
+
 
   return (
     <nav className="sticky top-0 z-50 bg-clear-day/95 backdrop-blur-md border-b border-nordic/10">
@@ -86,33 +174,55 @@ const Navbar = () => {
             <div className="pl-2 border-l border-nordic/10 relative" ref={profileRef}>
               {user ? (
                 <>
-                  <button 
+                  <button
                     onClick={() => setIsProfileOpen(!isProfileOpen)}
                     className="flex items-center gap-2"
+                    disabled={isLoggingOut}
                   >
                     <div className="w-9 h-9 rounded-full bg-gray-200 overflow-hidden ring-2 ring-transparent hover:ring-mosque transition-all">
-                      <img
-                        alt="Profile"
-                        className="w-full h-full object-cover"
-                        src={user.user_metadata?.avatar_url || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"}
-                      />
+                      {isLoggingOut ? (
+                        <div className="w-full h-full flex items-center justify-center bg-nordic/10">
+                          <span className="material-icons text-nordic/50 text-lg animate-spin">refresh</span>
+                        </div>
+                      ) : (
+                        <img
+                          alt="Profile"
+                          className="w-full h-full object-cover"
+                          src={user.user_metadata?.avatar_url || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"}
+                        />
+                      )}
                     </div>
                   </button>
-                  
+
                   {isProfileOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-nordic/5 overflow-hidden z-[200] animate-fade-in-down">
+                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-nordic/5 overflow-hidden z-[200] animate-fade-in-down">
                       <div className="py-2 px-4 border-b border-nordic/5">
                         <p className="text-sm font-semibold truncate text-nordic">
                           {user.user_metadata?.full_name || user.email}
                         </p>
+                        <p className="text-xs text-nordic/40 truncate">{user.email}</p>
                       </div>
                       <div className="py-1">
+                        {isAdmin && (
+                          <Link
+                            href="/admin"
+                            onClick={() => setIsProfileOpen(false)}
+                            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-mosque hover:bg-mosque/10 transition-colors"
+                          >
+                            <span className="material-icons text-[18px]">admin_panel_settings</span>
+                            <span>Panel Admin</span>
+                          </Link>
+                        )}
                         <button
+                          id="logout-btn"
                           onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                          disabled={isLoggingOut}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors disabled:opacity-60"
                         >
-                          <span className="material-icons text-[18px]">logout</span>
-                          <span>{t('auth.logout')}</span>
+                          <span className={`material-icons text-[18px] ${isLoggingOut ? 'animate-spin' : ''}`}>
+                            {isLoggingOut ? 'refresh' : 'logout'}
+                          </span>
+                          <span>{isLoggingOut ? 'Cerrando…' : t('auth.logout')}</span>
                         </button>
                       </div>
                     </div>
