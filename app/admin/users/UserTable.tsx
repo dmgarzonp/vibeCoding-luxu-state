@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { updateUserRole } from './action';
 import type { UserWithRole } from './types';
 
@@ -261,9 +262,16 @@ export default function UsersTableClient({ users }: { users: UserWithRole[] }) {
   });
 
   return (
-    <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
+    <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      {/* ── Breadcrumb ─────────────────────────────────────────── */}
+      <nav className="flex items-center gap-2 text-xs font-medium text-gray-400 mb-4 bg-white/50 w-fit px-3 py-1 rounded-full border border-gray-100">
+        <Link href="/admin" className="hover:text-mosque transition-colors">Administración</Link>
+        <span className="material-icons text-[10px]">chevron_right</span>
+        <span className="text-mosque">Usuarios</span>
+      </nav>
+
       {/* ── Page Header ─────────────────────────────────────── */}
-      <header className="pt-8 pb-0">
+      <header className="mb-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-nordic">Directorio de Usuarios</h1>

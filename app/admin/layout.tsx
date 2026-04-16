@@ -48,13 +48,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`px-1 py-2 text-sm font-medium transition-colors ${
+                    className={`relative px-3 py-2 text-sm font-semibold transition-all duration-300 border-b-2 ${
                       isActive
-                        ? 'text-mosque border-b-2 border-mosque'
-                        : 'text-nordic/60 hover:text-mosque'
+                        ? 'text-mosque border-mosque bg-mosque/5'
+                        : 'text-nordic/50 border-transparent hover:text-mosque hover:bg-mosque/[0.02]'
                     }`}
                   >
                     {item.label}
+                    {isActive && (
+                      <span className="absolute -bottom-[2px] left-0 w-full h-[2px] bg-mosque shadow-[0_0_8px_rgba(0,102,102,0.4)]" />
+                    )}
                   </Link>
                 );
               })}

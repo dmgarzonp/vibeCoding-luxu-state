@@ -1,30 +1,32 @@
 import { supabaseAdmin } from '../../../lib/supabase/server';
+import Link from 'next/link';
 
 interface Property {
   id: number;
   title: string;
   location: string;
-  price: number;
+  price: string;
   type: string;
   status: string;
-  bedrooms: number | null;
-  bathrooms: number | null;
-  area: number | null;
-  featured: boolean;
+  beds: number | null;
+  baths: number | null;
+  sqm: number | null;
+  is_featured: boolean;
   created_at: string;
   images?: string[] | null;
 }
 
 /* ─── Status badge ───────────────────────────────────────────── */
 function StatusBadge({ status, featured }: { status: string; featured: boolean }) {
-  const display = featured ? 'featured' : status;
+  const display = featured ? 'featured' : status.toLowerCase();
 
   const styles: Record<string, { bg: string; text: string; border: string; dot: string; label: string }> = {
-    featured: { bg: 'bg-hint-of-green', text: 'text-mosque',     border: 'border-mosque/10',  dot: 'bg-mosque',       label: 'Destacada'  },
-    active:   { bg: 'bg-hint-of-green', text: 'text-mosque',     border: 'border-mosque/10',  dot: 'bg-mosque',       label: 'Activa'     },
-    pending:  { bg: 'bg-orange-100',    text: 'text-orange-700', border: 'border-orange-200', dot: 'bg-orange-500',   label: 'Pendiente'  },
-    sold:     { bg: 'bg-gray-100',      text: 'text-gray-600',   border: 'border-gray-200',   dot: 'bg-gray-500',     label: 'Vendida'    },
-    rented:   { bg: 'bg-indigo-50',     text: 'text-indigo-700', border: 'border-indigo-200', dot: 'bg-indigo-500',   label: 'Arrendada'  },
+    featured:   { bg: 'bg-hint-of-green', text: 'text-mosque',     border: 'border-mosque/10',  dot: 'bg-mosque',       label: 'Destacada'  },
+    'for sale': { bg: 'bg-hint-of-green', text: 'text-mosque',     border: 'border-mosque/10',  dot: 'bg-mosque',       label: 'Activa'     },
+    'for rent': { bg: 'bg-indigo-50',     text: 'text-indigo-700', border: 'border-indigo-200', dot: 'bg-indigo-500',   label: 'Arrendada'  },
+    active:     { bg: 'bg-hint-of-green', text: 'text-mosque',     border: 'border-mosque/10',  dot: 'bg-mosque',       label: 'Activa'     },
+    pending:    { bg: 'bg-orange-100',    text: 'text-orange-700', border: 'border-orange-200', dot: 'bg-orange-500',   label: 'Pendiente'  },
+    sold:       { bg: 'bg-gray-100',      text: 'text-gray-600',   border: 'border-gray-200',   dot: 'bg-gray-500',     label: 'Vendida'    },
   };
 
   const s = styles[display] ?? { bg: 'bg-gray-100', text: 'text-gray-600', border: 'border-gray-200', dot: 'bg-gray-400', label: status };
@@ -64,25 +66,25 @@ function PropertyRow({ property }: { property: Property }) {
           </h3>
           <p className="text-sm text-gray-500 truncate">{property.location}</p>
           <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-400 flex-wrap">
-            {property.bedrooms != null && (
+            {property.beds != null && (
               <span className="flex items-center gap-1 flex-shrink-0">
                 <span className="material-icons text-[14px]">bed</span>
-                {property.bedrooms} Hab.
+                {property.beds} Hab.
               </span>
             )}
-            {property.bedrooms != null && property.bathrooms != null && (
+            {property.beds != null && property.baths != null && (
               <span className="w-1 h-1 rounded-full bg-gray-300 flex-shrink-0" />
             )}
-            {property.bathrooms != null && (
+            {property.baths != null && (
               <span className="flex items-center gap-1 flex-shrink-0">
                 <span className="material-icons text-[14px]">bathtub</span>
-                {property.bathrooms} Baños
+                {property.baths} Baños
               </span>
             )}
-            {property.area != null && (
+            {property.sqm != null && (
               <>
                 <span className="w-1 h-1 rounded-full bg-gray-300 flex-shrink-0" />
-                <span className="flex-shrink-0">{property.area.toLocaleString()} m²</span>
+                <span className="flex-shrink-0">{property.sqm.toLocaleString()} m²</span>
               </>
             )}
           </div>
@@ -92,14 +94,14 @@ function PropertyRow({ property }: { property: Property }) {
       {/* Col 2: Price — 2/12 */}
       <div className="col-span-6 md:col-span-2">
         <div className="text-base font-semibold text-nordic">
-          ${property.price?.toLocaleString('en-US')}
+          {property.price}
         </div>
         <div className="text-xs text-gray-400 capitalize">{property.type}</div>
       </div>
 
       {/* Col 3: Status — 2/12 */}
       <div className="col-span-6 md:col-span-2">
-        <StatusBadge status={property.status} featured={property.featured} />
+        <StatusBadge status={property.status} featured={property.is_featured} />
       </div>
 
       {/* Col 4: Actions — 2/12 */}
@@ -122,11 +124,30 @@ function PropertyRow({ property }: { property: Property }) {
 }
 
 /* ─── Page ───────────────────────────────────────────────────── */
-export default async function AdminPropertiesPage() {
-  const { data: properties, error } = await supabaseAdmin
+export default async function AdminPropertiesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const params = await searchParams;
+  const currentPage = Number(params.page) || 1;
+  const limit = 10;
+  const from = (currentPage - 1) * limit;
+  const to = from + limit - 1;
+
+  // 1. Get stats for ALL properties (independent of pagination)
+  const { data: statsData, error: statsError } = await supabaseAdmin
     .from('properties')
-    .select('id, title, location, price, type, status, bedrooms, bathrooms, area, featured, created_at, images')
-    .order('created_at', { ascending: false });
+    .select('status, is_featured');
+
+  // 2. Get paginated data for the current page
+  const { data: pagedProperties, error: pagedError, count: totalRows } = await supabaseAdmin
+    .from('properties')
+    .select('id, title, location, price, type, status, beds, baths, sqm, is_featured, created_at, images', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  const error = statsError || pagedError;
 
   if (error) {
     return (
@@ -139,13 +160,25 @@ export default async function AdminPropertiesPage() {
     );
   }
 
-  const list = (properties ?? []) as Property[];
-  const total = list.length;
-  const active = list.filter((p) => p.status === 'active' || p.featured).length;
-  const pending = list.filter((p) => p.status === 'pending').length;
+  const list = (pagedProperties ?? []) as Property[];
+  const statsList = statsData ?? [];
+  const total = totalRows || 0;
+  const activeCount = statsList.filter((p) => p.status === 'FOR SALE' || p.status === 'FOR RENT' || p.is_featured).length;
+  const pendingCount = statsList.filter((p) => p.status === 'PENDING').length;
+
+  const totalPages = Math.ceil(total / limit);
+  const startRange = from + 1;
+  const endRange = Math.min(from + limit, total);
 
   return (
     <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+      {/* ── Breadcrumb ─────────────────────────────────────────── */}
+      <nav className="flex items-center gap-2 text-xs font-medium text-gray-400 mb-4 bg-white/50 w-fit px-3 py-1 rounded-full border border-gray-100">
+        <Link href="/admin" className="hover:text-mosque transition-colors">Administración</Link>
+        <span className="material-icons text-[10px]">chevron_right</span>
+        <span className="text-mosque">Propiedades</span>
+      </nav>
 
       {/* ── Header ─────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
@@ -181,7 +214,7 @@ export default async function AdminPropertiesPage() {
         <div className="bg-white p-5 rounded-xl border border-mosque/10 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-500">Propiedades Activas</p>
-            <p className="text-2xl font-bold text-nordic mt-1">{active}</p>
+            <p className="text-2xl font-bold text-nordic mt-1">{activeCount}</p>
           </div>
           <div className="h-10 w-10 rounded-full bg-hint-of-green flex items-center justify-center text-mosque flex-shrink-0">
             <span className="material-icons">check_circle</span>
@@ -191,7 +224,7 @@ export default async function AdminPropertiesPage() {
         <div className="bg-white p-5 rounded-xl border border-mosque/10 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-500">Pendientes de Venta</p>
-            <p className="text-2xl font-bold text-nordic mt-1">{pending}</p>
+            <p className="text-2xl font-bold text-nordic mt-1">{pendingCount}</p>
           </div>
           <div className="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 flex-shrink-0">
             <span className="material-icons">pending</span>
@@ -226,20 +259,47 @@ export default async function AdminPropertiesPage() {
         {/* Pagination footer */}
         <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/50">
           <div className="text-sm text-gray-500">
-            Mostrando <span className="font-medium text-nordic">1</span> a{' '}
-            <span className="font-medium text-nordic">{total}</span> de{' '}
+            Mostrando <span className="font-medium text-nordic">{total > 0 ? startRange : 0}</span> a{' '}
+            <span className="font-medium text-nordic">{endRange}</span> de{' '}
             <span className="font-medium text-nordic">{total}</span> resultados
           </div>
           <div className="flex gap-2">
-            <button
-              disabled
-              className="px-3 py-1 text-sm border border-gray-200 rounded-md text-gray-600 hover:bg-white disabled:opacity-50"
+            <Link
+              href="/admin/properties?page=1"
+              className={`px-2 py-1 text-sm border border-gray-200 rounded-md text-gray-600 hover:bg-white flex items-center ${
+                currentPage <= 1 ? 'opacity-50 pointer-events-none' : ''
+              }`}
+              title="Primera página"
             >
+              <span className="material-icons text-xl">first_page</span>
+            </Link>
+            <Link
+              href={currentPage > 1 ? `/admin/properties?page=${currentPage - 1}` : '#'}
+              className={`px-3 py-1 text-sm border border-gray-200 rounded-md text-gray-600 hover:bg-white flex items-center gap-1 ${
+                currentPage <= 1 ? 'opacity-50 pointer-events-none' : ''
+              }`}
+            >
+              <span className="material-icons text-sm">chevron_left</span>
               Anterior
-            </button>
-            <button className="px-3 py-1 text-sm border border-gray-200 rounded-md text-gray-600 hover:bg-white">
+            </Link>
+            <Link
+              href={currentPage < totalPages ? `/admin/properties?page=${currentPage + 1}` : '#'}
+              className={`px-3 py-1 text-sm border border-gray-200 rounded-md text-gray-600 hover:bg-white flex items-center gap-1 ${
+                currentPage >= totalPages ? 'opacity-50 pointer-events-none' : ''
+              }`}
+            >
               Siguiente
-            </button>
+              <span className="material-icons text-sm">chevron_right</span>
+            </Link>
+            <Link
+              href={`/admin/properties?page=${totalPages}`}
+              className={`px-2 py-1 text-sm border border-gray-200 rounded-md text-gray-600 hover:bg-white flex items-center ${
+                currentPage >= totalPages ? 'opacity-50 pointer-events-none' : ''
+              }`}
+              title="Última página"
+            >
+              <span className="material-icons text-xl">last_page</span>
+            </Link>
           </div>
         </div>
       </div>
