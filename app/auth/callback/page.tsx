@@ -22,39 +22,48 @@ export default function AuthCallbackPage() {
       }
     };
 
-    // Escuchar el evento SIGNED_IN que Supabase dispara al procesar el hash de OAuth
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === 'SIGNED_IN' && session?.user) {
-          try {
-            // Garantizar que existe registro en user_roles
-            const { error: rpcError } = await supabase.rpc('ensure_user_role');
-
-            if (rpcError) {
-              // Fallback: upsert directo
-              await supabase
-                .from('user_roles')
-                .upsert(
-                  { id: session.user.id, role: 'user' },
-                  { onConflict: 'id', ignoreDuplicates: true }
-                );
-            }
-          } catch (e) {
-            console.error('[auth/callback] Error ensuring role:', e);
-          }
-
-          finish();
+    const ensureRole = async (userId: string) => {
+      try {
+        const { error: rpcError } = await supabase.rpc('ensure_user_role');
+        if (rpcError) {
+          await supabase
+            .from('user_roles')
+            .upsert(
+              { id: userId, role: 'user' },
+              { onConflict: 'id', ignoreDuplicates: true }
+            );
         }
+      } catch (e) {
+        console.error('[auth/callback] Error ensuring role:', e);
       }
-    );
-
-    // Seguro: si en 5 segundos no llega el evento, redirigir igual
-    const timeout = setTimeout(finish, 5000);
-
-    return () => {
-      subscription.unsubscribe();
-      clearTimeout(timeout);
     };
+
+    // Verificar si ya hay sesión activa (ej: recarga de página o token ya procesado)
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user) {
+        await ensureRole(session.user.id);
+        finish();
+        return;
+      }
+
+      // Si no hay sesión todavía, escuchar el evento SIGNED_IN
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        async (event, session) => {
+          if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user) {
+            await ensureRole(session.user.id);
+            finish();
+          }
+        }
+      );
+
+      // Timeout de seguridad reducido a 2s — si no llega evento, redirigir igual
+      const timeout = setTimeout(finish, 2000);
+
+      return () => {
+        subscription.unsubscribe();
+        clearTimeout(timeout);
+      };
+    });
   }, [router]);
 
   return (

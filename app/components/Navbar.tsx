@@ -109,18 +109,8 @@ const Navbar = () => {
     setIsLoggingOut(true);
     setIsProfileOpen(false);
 
-    try {
-      // scope:'local' limpia la sesión local INMEDIATAMENTE sin llamada de red.
-      // Mucho más confiable con providers OAuth (Google, GitHub).
-      await supabase.auth.signOut({ scope: 'local' });
-      syncSessionToCookie(null); // Limpiar cookie
-    } catch (e) {
-      console.warn('signOut warning:', e);
-    }
-
-
-    // Limpiar manualmente cualquier token de Supabase en localStorage
-    // como seguro adicional (por si el signOut no limpió todo)
+    // 1. Limpiar cookie y localStorage de inmediato (no esperar signOut)
+    syncSessionToCookie(null);
     try {
       Object.keys(localStorage)
         .filter((k) => k.startsWith('sb-'))
@@ -129,9 +119,15 @@ const Navbar = () => {
       // localStorage puede no estar disponible en algunos contextos
     }
 
-    // Redirigir siempre, sin importar si signOut tuvo error
+    // 2. Redirigir de inmediato — no bloquear la UI esperando la respuesta del servidor
     window.location.href = '/';
+
+    // 3. signOut en background (best-effort, puede completarse antes o después del redirect)
+    supabase.auth.signOut({ scope: 'local' }).catch((e) => {
+      console.warn('signOut warning:', e);
+    });
   };
+
 
 
   return (

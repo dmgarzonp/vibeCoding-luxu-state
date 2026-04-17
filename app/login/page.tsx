@@ -10,6 +10,12 @@ export default function LoginPage() {
 
   const handleLogin = async (provider: 'google' | 'github') => {
     setLoadingProvider(provider);
+
+    // Timeout de seguridad: si en 8s no hubo redirección, resetear el spinner
+    const safetyTimer = setTimeout(() => {
+      setLoadingProvider(null);
+    }, 8000);
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
@@ -17,11 +23,13 @@ export default function LoginPage() {
       },
     });
 
-
     if (error) {
+      clearTimeout(safetyTimer);
       console.error('Error logging in:', error.message);
       setLoadingProvider(null);
     }
+    // Si no hay error, el browser redirige al proveedor OAuth.
+    // El safetyTimer se encarga de limpiar si el redirect no ocurre.
   };
 
   return (

@@ -191,8 +191,8 @@ export default async function AdminPropertiesPage({
             <span className="material-icons text-base">filter_list</span>
             Filtrar
           </button>
-          <button className="bg-mosque hover:bg-mosque/90 text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-md shadow-mosque/20 transition-all hover:-translate-y-0.5 inline-flex items-center gap-2">
-            <span className="material-icons text-base">add</span>
+          <button className="inline-flex items-center justify-center px-4 py-2.5 border border-mosque text-sm font-medium rounded-lg text-mosque bg-transparent hover:bg-mosque/5 transition-colors whitespace-nowrap gap-2">
+            <span className="material-icons text-lg">add</span>
             Nueva Propiedad
           </button>
         </div>
