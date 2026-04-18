@@ -78,6 +78,32 @@ export default function PropertyForm({ initialData = {} }: PropertyFormProps) {
     setFormData(prev => ({ ...prev, latitude: lat, longitude: lng }));
   };
 
+  const [isSearching, setIsSearching] = useState(false);
+  const handleSearchAddress = async () => {
+    if (!formData.location) return;
+    setIsSearching(true);
+    try {
+      const query = encodeURIComponent(formData.location);
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`);
+      const data = await res.json();
+      
+      if (data && data.length > 0) {
+        const { lat, lon } = data[0];
+        setFormData(prev => ({
+          ...prev,
+          latitude: parseFloat(parseFloat(lat).toFixed(7)),
+          longitude: parseFloat(parseFloat(lon).toFixed(7))
+        }));
+      } else {
+        alert('No se encontró la ubicación. Intenta ser más específico (Ciudad, País).');
+      }
+    } catch (error) {
+      console.error('Error al buscar dirección:', error);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   // Image Upload Logic
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -323,7 +349,18 @@ export default function PropertyForm({ initialData = {} }: PropertyFormProps) {
             <div className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-nordic mb-1.5" htmlFor="location">Dirección completa</label>
-                <input name="location" value={formData.location} onChange={handleChange} className="w-full px-4 py-2.5 rounded-md border border-gray-200 bg-white text-nordic placeholder-gray-400 focus:ring-1 focus:ring-mosque focus:border-mosque transition-all text-sm" id="location" placeholder="Calle, Ciudad, Código Postal" type="text" />
+                <div className="flex gap-2">
+                  <input name="location" value={formData.location} onChange={handleChange} className="flex-grow px-4 py-2.5 rounded-md border border-gray-200 bg-white text-nordic placeholder-gray-400 focus:ring-1 focus:ring-mosque focus:border-mosque transition-all text-sm" id="location" placeholder="Calle, Ciudad, Código Postal" type="text" />
+                  <button 
+                    type="button"
+                    onClick={handleSearchAddress}
+                    disabled={isSearching || !formData.location}
+                    className="px-4 py-2.5 bg-white border border-gray-200 text-mosque rounded-md hover:bg-hint-of-green transition-colors text-sm font-medium flex items-center gap-2 disabled:opacity-50"
+                  >
+                    <span className="material-icons text-sm">{isSearching ? 'hourglass_empty' : 'search'}</span>
+                    {isSearching ? '...' : 'Buscar'}
+                  </button>
+                </div>
               </div>
               <div className="pt-2">
                 <PropertyMap 

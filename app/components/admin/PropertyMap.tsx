@@ -174,19 +174,29 @@ export default function PropertyMap({ lat, lng, onChange }: PropertyMapProps) {
         <div>
           <label className="block text-xs text-gray-500 font-medium mb-1">Latitud</label>
           <input
-            readOnly
+            type="number"
+            step="any"
             value={lat ?? ''}
-            placeholder="—"
-            className="w-full px-3 py-2 rounded border border-gray-200 bg-gray-50 text-nordic text-sm font-mono focus:outline-none cursor-default"
+            onChange={(e) => {
+              const val = parseFloat(e.target.value);
+              if (!isNaN(val)) onChange(val, lng ?? DEFAULT_LNG);
+            }}
+            placeholder="0.0000"
+            className="w-full px-3 py-2 rounded border border-gray-200 bg-white text-nordic text-sm font-mono focus:ring-1 focus:ring-mosque focus:border-mosque outline-none transition-all"
           />
         </div>
         <div>
           <label className="block text-xs text-gray-500 font-medium mb-1">Longitud</label>
           <input
-            readOnly
+            type="number"
+            step="any"
             value={lng ?? ''}
-            placeholder="—"
-            className="w-full px-3 py-2 rounded border border-gray-200 bg-gray-50 text-nordic text-sm font-mono focus:outline-none cursor-default"
+            onChange={(e) => {
+              const val = parseFloat(e.target.value);
+              if (!isNaN(val)) onChange(lat ?? DEFAULT_LAT, val);
+            }}
+            placeholder="0.0000"
+            className="w-full px-3 py-2 rounded border border-gray-200 bg-white text-nordic text-sm font-mono focus:ring-1 focus:ring-mosque focus:border-mosque outline-none transition-all"
           />
         </div>
       </div>
