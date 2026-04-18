@@ -52,6 +52,8 @@ export async function saveProperty(propertyData: any) {
       year_built:  propertyData.year_built ?? null,
       parking:     propertyData.parking ?? null,
       amenities:   propertyData.amenities ?? [],
+      latitude:    propertyData.latitude ?? null,
+      longitude:   propertyData.longitude ?? null,
     };
 
     if (propertyData.id) {

@@ -4,6 +4,12 @@ import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { saveProperty, uploadPropertyFile } from '../../admin/properties/actions';
+import dynamic from 'next/dynamic';
+
+const PropertyMap = dynamic(() => import('./PropertyMap'), { 
+  ssr: false,
+  loading: () => <div className="h-48 w-full bg-gray-100 animate-pulse rounded-lg flex items-center justify-center text-xs text-gray-400">Cargando mapa...</div>
+});
 
 interface PropertyFormProps {
   initialData?: any;
@@ -28,6 +34,8 @@ export default function PropertyForm({ initialData = {} }: PropertyFormProps) {
     beds: initialData.beds || 1,
     baths: initialData.baths || 1,
     parking: initialData.parking || 0,
+    latitude: initialData.latitude || null,
+    longitude: initialData.longitude || null,
   });
 
   const rawAmenities = initialData.amenities || [];
@@ -64,6 +72,10 @@ export default function PropertyForm({ initialData = {} }: PropertyFormProps) {
 
   const decrement = (field: 'beds' | 'baths' | 'parking') => {
     setFormData(prev => ({ ...prev, [field]: Math.max(0, prev[field] - 1) }));
+  };
+
+  const handleLocationChange = (lat: number, lng: number) => {
+    setFormData(prev => ({ ...prev, latitude: lat, longitude: lng }));
   };
 
   // Image Upload Logic
@@ -128,6 +140,8 @@ export default function PropertyForm({ initialData = {} }: PropertyFormProps) {
         isExclusive: flags.isExclusive,
         isFeatured: flags.isFeatured,
         isNew: flags.isNew,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
       };
 
       const res = await saveProperty(propertyPayload);
@@ -311,13 +325,12 @@ export default function PropertyForm({ initialData = {} }: PropertyFormProps) {
                 <label className="block text-sm font-medium text-nordic mb-1.5" htmlFor="location">Dirección completa</label>
                 <input name="location" value={formData.location} onChange={handleChange} className="w-full px-4 py-2.5 rounded-md border border-gray-200 bg-white text-nordic placeholder-gray-400 focus:ring-1 focus:ring-mosque focus:border-mosque transition-all text-sm" id="location" placeholder="Calle, Ciudad, Código Postal" type="text" />
               </div>
-              <div className="relative h-48 w-full rounded-lg overflow-hidden bg-gray-100 border border-gray-200 group">
-                <img alt="Map view of city streets" className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS55FY7gfArnlTpNsdabJk9nBO5uQJgOwIsl8beO34JRZ9dMmjLoIkTuTUO72Y9L5tUmQqTReQWebUWadAWwLusGmRQiIict5sqY--yRaOxuYpTzfR4vv4RKh1ex6oxY64e0kbSeMudNO6pv-gG0WzVWs-pDfvQm5IoTQ1mT-tAV49LDkXAHZl317M1-D7eZw3N8o2ExKWTgg6oMAXOFVnkApIqnb7TZHekwSw8pWQxpJV2EKI8EQKQbQXJaSbjN8gB1n8b-ueWj8" />
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="bg-white/90 text-nordic px-3 py-1.5 rounded shadow-sm backdrop-blur-sm text-xs font-bold flex items-center gap-1">
-                    <span className="material-icons text-sm text-mosque">map</span> Vista Previa
-                  </span>
-                </div>
+              <div className="pt-2">
+                <PropertyMap 
+                  lat={formData.latitude} 
+                  lng={formData.longitude} 
+                  onChange={handleLocationChange} 
+                />
               </div>
             </div>
           </div>
