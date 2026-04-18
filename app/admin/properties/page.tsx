@@ -106,12 +106,13 @@ function PropertyRow({ property }: { property: Property }) {
 
       {/* Col 4: Actions — 2/12 */}
       <div className="col-span-12 md:col-span-2 flex items-center justify-end gap-2">
-        <button
+        <Link
+          href={`/admin/properties/${property.id}`}
           title="Editar propiedad"
           className="p-2 rounded-lg text-gray-400 hover:text-mosque hover:bg-hint-of-green/30 transition-all"
         >
           <span className="material-icons text-xl">edit</span>
-        </button>
+        </Link>
         <button
           title="Eliminar propiedad"
           className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all"
@@ -191,10 +192,10 @@ export default async function AdminPropertiesPage({
             <span className="material-icons text-base">filter_list</span>
             Filtrar
           </button>
-          <button className="inline-flex items-center justify-center px-4 py-2.5 border border-mosque text-sm font-medium rounded-lg text-mosque bg-transparent hover:bg-mosque/5 transition-colors whitespace-nowrap gap-2">
+          <Link href="/admin/properties/create" className="inline-flex items-center justify-center px-4 py-2.5 border border-mosque text-sm font-medium rounded-lg text-mosque bg-transparent hover:bg-mosque/5 transition-colors whitespace-nowrap gap-2">
             <span className="material-icons text-lg">add</span>
             Nueva Propiedad
-          </button>
+          </Link>
         </div>
       </div>
 
