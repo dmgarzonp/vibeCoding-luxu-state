@@ -102,14 +102,23 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose }) => {
             <div className="relative group">
               <span className="material-icons absolute left-4 top-3.5 text-nordic/40 group-focus-within:text-mosque transition-colors">search</span>
               <input
-                className="w-full pl-12 pr-4 py-3 bg-clear-day border-0 rounded-lg text-nordic placeholder-nordic/40 focus:ring-2 focus:ring-mosque focus:bg-white transition-all shadow-sm outline-none"
+                className="w-full pl-12 pr-12 py-3 bg-clear-day border-0 rounded-lg text-nordic placeholder-nordic/40 focus:ring-2 focus:ring-mosque focus:bg-white transition-all shadow-sm outline-none"
                 placeholder={t('filter.location_placeholder')}
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
+              {query && (
+                <button
+                  onClick={() => setQuery('')}
+                  className="absolute right-3 top-2.5 p-1 rounded-full hover:bg-black/5 text-nordic/40 hover:text-nordic transition-colors cursor-pointer"
+                >
+                  <span className="material-icons text-xl">close</span>
+                </button>
+              )}
             </div>
           </section>
+
 
           {/* Section 2: Price Range (Visual Only) */}
           <section>

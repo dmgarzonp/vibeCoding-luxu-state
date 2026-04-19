@@ -34,6 +34,14 @@ const Hero = () => {
     router.push(`/?${params.toString()}`);
   };
 
+  const handleClear = () => {
+    setQuery('');
+    const params = new URLSearchParams(searchParams?.toString() || '');
+    params.delete('query');
+    params.delete('page');
+    router.push(`/?${params.toString()}`);
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') handleSearch();
   };
@@ -63,24 +71,36 @@ const Hero = () => {
         </h1>
 
         {/* Search Bar */}
-        <div className="relative group max-w-2xl mx-auto">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <span className="material-icons text-nordic/50 text-2xl group-focus-within:text-mosque transition-colors">search</span>
+        <div className="relative group max-w-2xl mx-auto transform transition-all hover:scale-[1.01] duration-300">
+          <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+            <span className="material-icons text-nordic/40 text-2xl group-focus-within:text-mosque transition-colors">search</span>
           </div>
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyPress}
-            className="block w-full pl-12 pr-4 py-4 rounded-xl border-none bg-white text-nordic shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] placeholder-nordic/40 focus:ring-2 focus:ring-mosque focus:bg-white transition-all text-lg outline-none"
+            className="block w-full pl-14 pr-36 py-5 rounded-2xl border-none bg-white text-nordic shadow-[0_15px_50px_-15px_rgba(0,0,0,0.1)] placeholder-nordic/30 focus:ring-2 focus:ring-mosque/30 focus:bg-white transition-all text-lg outline-none"
             placeholder={t('hero.placeholder')}
           />
-          <button
-            onClick={handleSearch}
-            className="absolute inset-y-2 right-2 px-6 bg-mosque hover:bg-mosque/90 text-white font-medium rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-mosque/20 cursor-pointer"
-          >
-            {t('hero.search_btn')}
-          </button>
+          
+          <div className="absolute inset-y-2 right-2 flex items-center gap-2">
+            {query && (
+              <button
+                onClick={handleClear}
+                className="p-2 flex items-center justify-center rounded-full hover:bg-clear-day text-nordic/40 hover:text-nordic transition-all cursor-pointer transform hover:scale-110 active:scale-95"
+                title="Clear search"
+              >
+                <span className="material-icons text-xl">close</span>
+              </button>
+            )}
+            <button
+              onClick={handleSearch}
+              className="h-full px-7 bg-mosque hover:bg-mosque/90 text-white font-medium rounded-xl transition-all flex items-center justify-center shadow-lg shadow-mosque/20 cursor-pointer transform active:scale-95"
+            >
+              {t('hero.search_btn')}
+            </button>
+          </div>
         </div>
 
         {/* Categories */}
@@ -115,6 +135,7 @@ const Hero = () => {
 
       <FilterModal isOpen={isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} />
     </section>
+
   );
 };
 
