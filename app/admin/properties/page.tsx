@@ -1,5 +1,6 @@
 import { supabaseAdmin } from '../../../lib/supabase/server';
 import Link from 'next/link';
+import PropertyActions from '../../components/admin/PropertyActions';
 
 interface Property {
   id: number;
@@ -12,23 +13,24 @@ interface Property {
   baths: number | null;
   sqm: number | null;
   is_featured: boolean;
+  is_active: boolean;
   created_at: string;
   images?: string[] | null;
 }
 
 /* ─── Status badge ───────────────────────────────────────────── */
-function StatusBadge({ status, featured }: { status: string; featured: boolean }) {
-  const display = featured ? 'featured' : status.toLowerCase();
-
+function StatusBadge({ status, featured, active }: { status: string; featured: boolean; active: boolean }) {
   const styles: Record<string, { bg: string; text: string; border: string; dot: string; label: string }> = {
     featured:   { bg: 'bg-hint-of-green', text: 'text-mosque',     border: 'border-mosque/10',  dot: 'bg-mosque',       label: 'Destacada'  },
     'for sale': { bg: 'bg-hint-of-green', text: 'text-mosque',     border: 'border-mosque/10',  dot: 'bg-mosque',       label: 'Activa'     },
     'for rent': { bg: 'bg-indigo-50',     text: 'text-indigo-700', border: 'border-indigo-200', dot: 'bg-indigo-500',   label: 'Arrendada'  },
+    inactive:   { bg: 'bg-gray-100',      text: 'text-gray-400',   border: 'border-gray-200',   dot: 'bg-gray-400',     label: 'Desactivada' },
     active:     { bg: 'bg-hint-of-green', text: 'text-mosque',     border: 'border-mosque/10',  dot: 'bg-mosque',       label: 'Activa'     },
     pending:    { bg: 'bg-orange-100',    text: 'text-orange-700', border: 'border-orange-200', dot: 'bg-orange-500',   label: 'Pendiente'  },
     sold:       { bg: 'bg-gray-100',      text: 'text-gray-600',   border: 'border-gray-200',   dot: 'bg-gray-500',     label: 'Vendida'    },
   };
 
+  const display = !active ? 'inactive' : (featured ? 'featured' : status.toLowerCase());
   const s = styles[display] ?? { bg: 'bg-gray-100', text: 'text-gray-600', border: 'border-gray-200', dot: 'bg-gray-400', label: status };
 
   return (
@@ -42,18 +44,26 @@ function StatusBadge({ status, featured }: { status: string; featured: boolean }
 /* ─── Property row ───────────────────────────────────────────── */
 function PropertyRow({ property }: { property: Property }) {
   const thumbnail = property.images?.[0] ?? null;
+  const isActive = property.is_active;
 
   return (
-    <div className="group grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 border-b border-gray-100 last:border-b-0 hover:bg-clear-day transition-colors items-center">
+    <div className={`group grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 border-b border-gray-100 last:border-b-0 hover:bg-clear-day transition-colors items-center ${!isActive ? 'bg-gray-50/50' : ''}`}>
       {/* Col 1: Property Details — 6/12 */}
-      <div className="col-span-12 md:col-span-6 flex gap-4 items-center min-w-0">
+      <div className={`col-span-12 md:col-span-6 flex gap-4 items-center min-w-0 ${!isActive ? 'opacity-60 grayscale-[0.5]' : ''}`}>
         <div className="relative h-20 w-28 flex-shrink-0 rounded-lg overflow-hidden bg-gray-200">
           {thumbnail ? (
-            <img
-              src={thumbnail}
-              alt={property.title}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+            <>
+              <img
+                src={thumbnail}
+                alt={property.title}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              {!isActive && (
+                <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                  <span className="material-icons text-white text-2xl drop-shadow-md">visibility_off</span>
+                </div>
+              )}
+            </>
           ) : (
             <div className="h-full w-full flex items-center justify-center text-gray-400">
               <span className="material-icons text-3xl">home_work</span>
@@ -61,10 +71,10 @@ function PropertyRow({ property }: { property: Property }) {
           )}
         </div>
         <div className="min-w-0">
-          <h3 className="text-lg font-bold text-nordic group-hover:text-mosque transition-colors cursor-pointer truncate">
+          <h3 className={`text-lg font-bold transition-colors cursor-pointer truncate ${!isActive ? 'text-gray-500' : 'text-nordic group-hover:text-mosque'}`}>
             {property.title}
           </h3>
-          <p className="text-sm text-gray-500 truncate">{property.location}</p>
+          <p className="text-sm text-gray-400 truncate">{property.location}</p>
           <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-400 flex-wrap">
             {property.beds != null && (
               <span className="flex items-center gap-1 flex-shrink-0">
@@ -92,7 +102,7 @@ function PropertyRow({ property }: { property: Property }) {
       </div>
 
       {/* Col 2: Price — 2/12 */}
-      <div className="col-span-6 md:col-span-2">
+      <div className={`col-span-6 md:col-span-2 ${!isActive ? 'opacity-50' : ''}`}>
         <div className="text-base font-semibold text-nordic">
           {property.price}
         </div>
@@ -101,24 +111,12 @@ function PropertyRow({ property }: { property: Property }) {
 
       {/* Col 3: Status — 2/12 */}
       <div className="col-span-6 md:col-span-2">
-        <StatusBadge status={property.status} featured={property.is_featured} />
+        <StatusBadge status={property.status} featured={property.is_featured} active={property.is_active} />
       </div>
 
       {/* Col 4: Actions — 2/12 */}
-      <div className="col-span-12 md:col-span-2 flex items-center justify-end gap-2">
-        <Link
-          href={`/admin/properties/${property.id}`}
-          title="Editar propiedad"
-          className="p-2 rounded-lg text-gray-400 hover:text-mosque hover:bg-hint-of-green/30 transition-all"
-        >
-          <span className="material-icons text-xl">edit</span>
-        </Link>
-        <button
-          title="Eliminar propiedad"
-          className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all"
-        >
-          <span className="material-icons text-xl">delete_outline</span>
-        </button>
+      <div className="col-span-12 md:col-span-2">
+        <PropertyActions propertyId={property.id} isActive={property.is_active} />
       </div>
     </div>
   );
@@ -139,12 +137,12 @@ export default async function AdminPropertiesPage({
   // 1. Get stats for ALL properties (independent of pagination)
   const { data: statsData, error: statsError } = await supabaseAdmin
     .from('properties')
-    .select('status, is_featured');
+    .select('status, is_featured, is_active');
 
   // 2. Get paginated data for the current page
   const { data: pagedProperties, error: pagedError, count: totalRows } = await supabaseAdmin
     .from('properties')
-    .select('id, title, location, price, type, status, beds, baths, sqm, is_featured, created_at, images', { count: 'exact' })
+    .select('id, title, location, price, type, status, beds, baths, sqm, is_featured, is_active, created_at, images', { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(from, to);
 
@@ -164,7 +162,7 @@ export default async function AdminPropertiesPage({
   const list = (pagedProperties ?? []) as Property[];
   const statsList = statsData ?? [];
   const total = totalRows || 0;
-  const activeCount = statsList.filter((p) => p.status === 'FOR SALE' || p.status === 'FOR RENT' || p.is_featured).length;
+  const activeCount = statsList.filter((p) => p.is_active).length;
   const pendingCount = statsList.filter((p) => p.status === 'PENDING').length;
 
   const totalPages = Math.ceil(total / limit);

@@ -53,7 +53,8 @@ export async function getProperties({
 }: GetPropertiesParams = {}) {
   let dbQuery = supabase
     .from('properties')
-    .select('*', { count: 'exact' });
+    .select('*', { count: 'exact' })
+    .eq('is_active', true);
 
   if (featured !== undefined) {
     dbQuery = dbQuery.eq('is_featured', featured);
@@ -132,6 +133,7 @@ export async function getPropertyBySlug(slug: string) {
     .from('properties')
     .select('*')
     .eq('slug', slug)
+    .eq('is_active', true)
     .single();
 
   if (error || !data) {

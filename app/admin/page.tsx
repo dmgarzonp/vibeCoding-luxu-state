@@ -26,7 +26,7 @@ function StatCard({ icon, label, value, iconBg, iconColor, sub }: StatCardProps)
 
 export default async function AdminPage() {
   const [propResult, userResult] = await Promise.all([
-    supabaseAdmin.from('properties').select('id, status', { count: 'exact', head: false }),
+    supabaseAdmin.from('properties').select('id, status, is_featured, is_active', { count: 'exact', head: false }),
     supabaseAdmin.from('user_roles').select('role', { count: 'exact', head: false }),
   ]);
 
@@ -34,7 +34,9 @@ export default async function AdminPage() {
   const users = userResult.data ?? [];
 
   const totalProperties = properties.length;
-  const featuredProps = properties.filter((p: { status?: string }) => p.status === 'featured').length;
+  const activeProperties = properties.filter((p: any) => p.is_active).length;
+  const inactiveProperties = totalProperties - activeProperties;
+  const featuredProps = properties.filter((p: any) => p.is_featured && p.is_active).length;
   const totalUsers = users.length;
   const totalAdmins = users.filter((u: { role: string }) => u.role === 'admin').length;
 
@@ -52,10 +54,10 @@ export default async function AdminPage() {
         <StatCard
           icon="apartment"
           label="Propiedades"
-          value={totalProperties}
+          value={activeProperties}
           iconBg="bg-mosque/10"
           iconColor="text-mosque"
-          sub="Total en base de datos"
+          sub={`${totalProperties} total (${inactiveProperties} inactivas)`}
         />
         <StatCard
           icon="star"
@@ -63,7 +65,7 @@ export default async function AdminPage() {
           value={featuredProps}
           iconBg="bg-amber-100"
           iconColor="text-amber-600"
-          sub="Con status featured"
+          sub="Activas con status featured"
         />
         <StatCard
           icon="group"

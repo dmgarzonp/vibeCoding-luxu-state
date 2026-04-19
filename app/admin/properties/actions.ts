@@ -48,6 +48,7 @@ export async function saveProperty(propertyData: any) {
       sqm:         propertyData.sqm ? Number(propertyData.sqm) : 0,
       images:      propertyData.images ?? [],
       is_featured: propertyData.isFeatured ?? false,
+      is_active:   propertyData.isActive ?? true,
       description: propertyData.description ?? null,
       year_built:  propertyData.year_built ?? null,
       parking:     propertyData.parking ?? null,
@@ -89,6 +90,24 @@ export async function saveProperty(propertyData: any) {
   } catch (err: any) {
     console.error('[saveProperty] unexpected error:', err);
     return { error: err.message || 'Error saving property' };
+  }
+}
+
+export async function togglePropertyStatus(id: string | number, currentStatus: boolean) {
+  try {
+    const { error } = await supabaseAdmin
+      .from('properties')
+      .update({ is_active: !currentStatus })
+      .eq('id', id);
+
+    if (error) throw error;
+
+    revalidatePath('/admin/properties');
+    revalidatePath('/');
+    return { success: true };
+  } catch (err: any) {
+    console.error('[togglePropertyStatus] error:', err);
+    return { error: err.message || 'Error toggling property status' };
   }
 }
 
