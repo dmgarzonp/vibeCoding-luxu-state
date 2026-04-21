@@ -38,6 +38,7 @@ export interface GetPropertiesParams {
   featured?: boolean;
   query?: string;
   type?: string;
+  status?: string;
   beds?: number;
   baths?: number;
 }
@@ -48,6 +49,7 @@ export async function getProperties({
   featured,
   query,
   type,
+  status,
   beds,
   baths
 }: GetPropertiesParams = {}) {
@@ -73,6 +75,10 @@ export async function getProperties({
     else if (type.toLowerCase() === 'penthouses') mappedType = 'Penthouse';
     
     dbQuery = dbQuery.ilike('type', mappedType);
+  }
+
+  if (status) {
+    dbQuery = dbQuery.eq('status', status);
   }
 
   if (beds) {

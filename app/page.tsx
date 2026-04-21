@@ -14,6 +14,7 @@ export default async function Home({
     page?: string;
     query?: string;
     type?: string;
+    status?: string;
     beds?: string;
     baths?: string;
   }>;
@@ -23,17 +24,19 @@ export default async function Home({
   const limit = 8;
   const query = params.query;
   const type = params.type;
+  const status = params.status || 'FOR SALE';
   const beds = params.beds ? Number(params.beds) : undefined;
   const baths = params.baths ? Number(params.baths) : undefined;
 
   // Fetch data on the server
-  const { data: featuredProperties } = await getProperties({ featured: true, query, type, beds, baths });
+  const { data: featuredProperties } = await getProperties({ featured: true, query, type, status, beds, baths });
   const { data: newProperties, count: totalNew } = await getProperties({
     featured: false,
     page: currentPage,
     limit,
     query,
     type,
+    status,
     beds,
     baths,
   });

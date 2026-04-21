@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useSearchParams, usePathname } from 'next/navigation';
 import LanguageSelector from './LanguageSelector';
 import { useTranslation } from '../../lib/i18n/context';
 import { supabase } from '../../lib/supabase';
@@ -53,6 +54,19 @@ const Navbar = () => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  const currentStatus = searchParams.get('status');
+  const isHome = pathname === '/' || pathname === '/es' || pathname === '/en' || pathname === '/fr';
+
+  const getLinkClass = (status: string | null) => {
+    const isActive = isHome && (currentStatus === status || (!currentStatus && status === 'FOR SALE'));
+    const baseClass = "font-medium text-sm px-1 py-1 transition-all";
+    return isActive 
+      ? `${baseClass} text-mosque border-b-2 border-mosque`
+      : `${baseClass} text-nordic/70 hover:text-nordic hover:border-b-2 hover:border-nordic/20`;
+  };
 
   useEffect(() => {
     // Verificar sesión activa al montar
@@ -146,10 +160,10 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <a className="text-mosque font-medium text-sm border-b-2 border-mosque px-1 py-1" href="#">{t('nav.buy')}</a>
-            <a className="text-nordic/70 hover:text-nordic font-medium text-sm hover:border-b-2 hover:border-nordic/20 px-1 py-1 transition-all" href="#">{t('nav.rent')}</a>
-            <a className="text-nordic/70 hover:text-nordic font-medium text-sm hover:border-b-2 hover:border-nordic/20 px-1 py-1 transition-all" href="#">{t('nav.sell')}</a>
-            <a className="text-nordic/70 hover:text-nordic font-medium text-sm hover:border-b-2 hover:border-nordic/20 px-1 py-1 transition-all" href="#">{t('nav.saved')}</a>
+            <Link className={getLinkClass('FOR SALE')} href="/?status=FOR SALE">{t('nav.buy')}</Link>
+            <Link className={getLinkClass('FOR RENT')} href="/?status=FOR RENT">{t('nav.rent')}</Link>
+            <Link className={getLinkClass('sell')} href="#">{t('nav.sell')}</Link>
+            <Link className={getLinkClass('saved')} href="#">{t('nav.saved')}</Link>
           </div>
 
           {/* Action Buttons */}
@@ -247,10 +261,10 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden border-t border-nordic/5 bg-clear-day overflow-hidden transition-all duration-300">
           <div className="px-4 py-2 space-y-1">
-            <a className="block px-3 py-2 rounded-md text-base font-medium text-mosque bg-mosque/10" href="#">{t('nav.buy')}</a>
-            <a className="block px-3 py-2 rounded-md text-base font-medium text-nordic hover:bg-nordic/5" href="#">{t('nav.rent')}</a>
-            <a className="block px-3 py-2 rounded-md text-base font-medium text-nordic hover:bg-nordic/5" href="#">{t('nav.sell')}</a>
-            <a className="block px-3 py-2 rounded-md text-base font-medium text-nordic hover:bg-nordic/5" href="#">{t('nav.saved')}</a>
+            <Link className={`block px-3 py-2 rounded-md text-base font-medium ${(currentStatus === 'FOR SALE' || (!currentStatus && isHome)) ? 'text-mosque bg-mosque/10' : 'text-nordic hover:bg-nordic/5'}`} href="/?status=FOR SALE">{t('nav.buy')}</Link>
+            <Link className={`block px-3 py-2 rounded-md text-base font-medium ${currentStatus === 'FOR RENT' ? 'text-mosque bg-mosque/10' : 'text-nordic hover:bg-nordic/5'}`} href="/?status=FOR RENT">{t('nav.rent')}</Link>
+            <Link className="block px-3 py-2 rounded-md text-base font-medium text-nordic hover:bg-nordic/5" href="#">{t('nav.sell')}</Link>
+            <Link className="block px-3 py-2 rounded-md text-base font-medium text-nordic hover:bg-nordic/5" href="#">{t('nav.saved')}</Link>
             <div className="pt-2 pb-1 px-3">
               <LanguageSelector />
             </div>
